@@ -597,7 +597,9 @@ PlayerSettings:
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Standalone: MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED
+    WebGL: 
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
@@ -702,7 +704,7 @@ PlayerSettings:
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
   apiCompatibilityLevel: 6
-  activeInputHandler: 0
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: d38b8e6a-7fc0-4606-9c3b-c7686ce3fd53
   framebufferDepthMemorylessMode: 0
