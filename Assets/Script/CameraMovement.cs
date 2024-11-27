@@ -34,6 +34,9 @@ public class CameraMovement : MonoBehaviour
     [Header("Camera Capture")]
     public GameObject cameraCapture; // The CameraCapture GameObject to disable in Exploration mode
 
+    [Header("Dialogue UI")]
+    public GameObject worldCanvas;
+
     private Vector2 minBounds;
     private Vector2 maxBounds;
     private float cameraWidth;
@@ -194,9 +197,10 @@ public class CameraMovement : MonoBehaviour
 
             // Disable CameraCapture functionality in Exploration Mode
             if (cameraCapture != null)
-            {
                 cameraCapture.SetActive(false);
-            }
+
+            if (worldCanvas != null)
+                cameraCapture.SetActive(true);
         }
         else if (currentMode == CameraMode.Photography)
         {
@@ -209,9 +213,9 @@ public class CameraMovement : MonoBehaviour
 
             // Enable CameraCapture functionality in Photography Mode
             if (cameraCapture != null)
-            {
                 cameraCapture.SetActive(true);
-            }
+            if (worldCanvas != null)
+                cameraCapture.SetActive(false);
         }
 
         // Update the UI
