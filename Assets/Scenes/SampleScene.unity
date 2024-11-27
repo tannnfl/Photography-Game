@@ -155,6 +155,11 @@ Transform:
   - {fileID: 1319152175}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &223742891 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3174161922820320664, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
+  m_PrefabInstance: {fileID: 2600302514025293953}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,7 +540,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1846792814
 Canvas:
   m_ObjectHideFlags: 0
@@ -545,7 +550,7 @@ Canvas:
   m_GameObject: {fileID: 1846792811}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -553,7 +558,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 1
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 399567539
@@ -568,16 +573,16 @@ RectTransform:
   m_GameObject: {fileID: 1846792811}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.0772, y: 0.1407}
+  m_SizeDelta: {x: 478.1408, y: 271.1659}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2040383834 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 813512089805120658, guid: dba8f8d0a30ec4a4385db2cf1fc97af5, type: 3}
@@ -738,6 +743,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4181493886997596010, guid: e2249b13e680644238ce7afa0e6d1f98, type: 3}
+      propertyPath: cameraCapture
+      value: 
+      objectReference: {fileID: 223742891}
     - target: {fileID: 4181493886997596010, guid: e2249b13e680644238ce7afa0e6d1f98, type: 3}
       propertyPath: virtualCamera
       value: 
@@ -907,6 +916,10 @@ PrefabInstance:
       propertyPath: Actors.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5503608308206738994, guid: 07221cf9343b34be38ac0f0b16290815, type: 3}
+      propertyPath: worldDialogueCanvas
+      value: 
+      objectReference: {fileID: 1846792811}
     - target: {fileID: 5503608308206738994, guid: 07221cf9343b34be38ac0f0b16290815, type: 3}
       propertyPath: Actors.Array.data[0]
       value: 
