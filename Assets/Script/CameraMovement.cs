@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
-using TMPro; 
-using UnityEngine.UI; 
+using TMPro;
+using UnityEngine.UI;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -30,6 +30,9 @@ public class CameraMovement : MonoBehaviour
     public GameObject cameraOverlayUI; // The camera overlay
     public TextMeshProUGUI modeIndicatorText; // Text for mode indication
     public Button switchModeButton; // Optional button for switching modes
+
+    [Header("Camera Capture")]
+    public GameObject cameraCapture; // The CameraCapture GameObject to disable in Exploration mode
 
     private Vector2 minBounds;
     private Vector2 maxBounds;
@@ -188,6 +191,12 @@ public class CameraMovement : MonoBehaviour
 
             // Smoothly reset zoom
             StartCoroutine(ResetZoom());
+
+            // Disable CameraCapture functionality in Exploration Mode
+            if (cameraCapture != null)
+            {
+                cameraCapture.SetActive(false);
+            }
         }
         else if (currentMode == CameraMode.Photography)
         {
@@ -197,6 +206,12 @@ public class CameraMovement : MonoBehaviour
 
             // Smoothly apply the fixed zoom
             StartCoroutine(ApplyZoom(fixedPhotographyZoom));
+
+            // Enable CameraCapture functionality in Photography Mode
+            if (cameraCapture != null)
+            {
+                cameraCapture.SetActive(true);
+            }
         }
 
         // Update the UI
@@ -246,5 +261,4 @@ public class CameraMovement : MonoBehaviour
         virtualCamera.m_Lens.OrthographicSize = targetZoom;
     }
 }
-
 

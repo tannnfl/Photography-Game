@@ -52,7 +52,5 @@ MonoBehaviour:
   SpawnTime: 5
   WaitTime: 3
   Actors: []
-  Actor1: {fileID: 0}
-  Actor2: {fileID: 0}
-  TextMP: {fileID: 0}
-  TextObject: {fileID: 0}
+  textPrefab: {fileID: 1628757721560629038, guid: 4aab673960d974acd8016b0b0c7f395e, type: 3}
+  worldCanvas: {fileID: 0}

@@ -1,89 +1,128 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class NewBehaviourScript : MonoBehaviour
 {
     [Header("Customize your dialogue content and actors (Game Objects) who speak it.")]
-
-    [Header("1. Put in the dialogue in sequence.")]
     public string[] Dialogues;
     public int[] WaitTimes;
     public int SpawnTime;
     public int WaitTime;
-    
-    [Header("2. Drag in the actor (GO) in the matching sequence.")]
-    [Header("For more than 2 actors, in any sequence:")]
-    public GameObject[] Actors;
-    [Header("For 1 or 2 actors, speaking by turn.")]
-    public GameObject Actor1;
-    [Header("For 1 actor, leave Actor2 blank.")]
-    public GameObject Actor2;
 
-    public TextMeshProUGUI TextMP;
-    public GameObject TextObject;
-    
+    [Header("Drag in the actor (GO) in the matching sequence.")]
+    public GameObject[] Actors; // List of NPCs that will speak
 
-    enum DialogueState
-    {
-        moreNPC, oneNPC, twoNPC
-    }
-    private DialogueState dialogueState;
-    private int i;
-    private float t;
+    public GameObject textPrefab; // Prefab for the TextMeshPro dialogue
 
-
+    private TextMeshProUGUI[] npcTextObjects; // TextMeshPro components for NPCs
+    private int i; // Current dialogue index
+    private float t; // Timer
 
     void Start()
     {
         i = -1;
         t = SpawnTime;
-        TextMP.alpha = 0;
 
-        //check error:
-        if (Actor1 == null && Actor2 == null && Actors.Length >= 1)
+        if (Actors.Length == 0 || Dialogues.Length == 0)
         {
-            dialogueState = DialogueState.moreNPC;
+            Debug.LogError("Actors or Dialogues not assigned! Check the inspector.");
+            return;
         }
-        else if (Actor1 != null && Actor2 == null && Actors.Length == 0)
-        {
-            dialogueState = DialogueState.oneNPC;
-        }
-        else if (Actor1 != null && Actor2 != null && Actors.Length == 0)
-        {
-            dialogueState = DialogueState.twoNPC;
-        }
-        else
-        {
-            Debug.Log("Wrong actor setting, please check inspector");
-        }
+
+        // Initialize TextMeshPro objects above each actor
+        InitializeNPCTextObjects();
     }
-
 
     void Update()
     {
-        //print dialogues here
         t -= Time.deltaTime;
-        if(t <= 0)
+
+        if (t <= 0)
         {
             i++;
-            if(i >= Dialogues.Length)
+
+            if (i >= Dialogues.Length)
             {
-                i = -1;
-                t = SpawnTime;
-                TextMP.alpha = 0;
+                ResetDialogue();
+                return;
             }
-            if (i == 0) TextMP.alpha = 1;
+
             if (WaitTimes.Length >= 1) t = WaitTimes[i];
             else if (WaitTime != 0) t = WaitTime;
-            else Debug.Log("WaitTime not set, check inspecter and set WaitTime or WaitTimes");
+            else Debug.LogError("WaitTime not set, check inspector and set WaitTime or WaitTimes");
+
+            ShowDialogue(i);
         }
-
-
-
-        if(i >= 0) TextMP.text = Dialogues[i];
-
     }
+
+    void InitializeNPCTextObjects()
+    {
+        npcTextObjects = new TextMeshProUGUI[Actors.Length];
+
+        for (int j = 0; j < Actors.Length; j++)
+        {
+            // Find or create a dialogue anchor for each NPC
+            Transform anchorTransform = Actors[j].transform.Find("DialogueAnchor");
+            if (anchorTransform == null)
+            {
+                // Create an anchor if it doesn't exist
+                GameObject anchor = new GameObject("DialogueAnchor");
+                anchorTransform = anchor.transform;
+                anchorTransform.SetParent(Actors[j].transform);
+                anchorTransform.localPosition = new Vector3(0, 2.5f, 0); // Position above the NPC's head
+            }
+
+            // Instantiate the text prefab and parent it to the anchor point
+            GameObject textObject = Instantiate(textPrefab, anchorTransform);
+            npcTextObjects[j] = textObject.GetComponent<TextMeshProUGUI>();
+
+            // Set local position of text relative to the anchor (usually centered)
+            textObject.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+
+            // Hide text initially
+            npcTextObjects[j].text = "";
+            npcTextObjects[j].gameObject.SetActive(false);
+        }
+    }
+
+    void ShowDialogue(int index)
+    {
+        // Determine which NPC is speaking
+        int actorIndex = Mathf.Min(index, Actors.Length - 1);
+
+        // Show the dialogue above the current NPC
+        npcTextObjects[actorIndex].text = Dialogues[index];
+        npcTextObjects[actorIndex].gameObject.SetActive(true);
+
+        // Hide the dialogue after the wait time
+        StartCoroutine(HideDialogueAfterDelay(npcTextObjects[actorIndex], t));
+    }
+
+    IEnumerator HideDialogueAfterDelay(TextMeshProUGUI textObject, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (textObject != null)
+        {
+            textObject.text = "";
+            textObject.gameObject.SetActive(false);
+        }
+    }
+
+    void ResetDialogue()
+    {
+        i = -1;
+        t = SpawnTime;
+
+        foreach (var textObject in npcTextObjects)
+        {
+            textObject.text = "";
+            textObject.gameObject.SetActive(false);
+        }
+    }
+
+
 }
+
