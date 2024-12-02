@@ -88,35 +88,33 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
-        if (currentMode == CameraMode.Photography)
+        if (currentMode == CameraMode.Photography || currentMode == CameraMode.Exploration)
         {
             // Handle movement input
             movement.x = Input.GetAxisRaw("Horizontal");
             movement.y = Input.GetAxisRaw("Vertical");
             movement = movement.normalized;
 
-            // Handle zoom input
-            float scrollInput = Input.GetAxis("Mouse ScrollWheel");
-            if (scrollInput != 0)
+            if (currentMode == CameraMode.Photography)
             {
-                currentZoom -= scrollInput * zoomSpeed;
-                currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+                // Handle zoom input in Photography mode only
+                float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+                if (scrollInput != 0)
+                {
+                    currentZoom -= scrollInput * zoomSpeed;
+                    currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
 
-                // Smooth transition to the target zoom
-                virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(
-                    virtualCamera.m_Lens.OrthographicSize,
-                    currentZoom,
-                    Time.deltaTime * zoomSpeed
-                );
+                    // Smooth transition to the target zoom
+                    virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(
+                        virtualCamera.m_Lens.OrthographicSize,
+                        currentZoom,
+                        Time.deltaTime * zoomSpeed
+                    );
 
-                // Update bounds after zooming
-                CalculateMovementBounds();
+                    // Update bounds after zooming
+                    CalculateMovementBounds();
+                }
             }
-        }
-        else
-        {
-            // No movement or zoom in Exploration mode
-            movement = Vector2.zero;
         }
 
         // Toggle between Photography and Exploration mode
@@ -135,7 +133,7 @@ public class CameraMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (currentMode == CameraMode.Photography)
+        if (currentMode == CameraMode.Photography || currentMode == CameraMode.Exploration)
         {
             // Move the camera
             Vector2 newPosition = rb.position + movement * speed * Time.deltaTime;
@@ -190,7 +188,7 @@ public class CameraMovement : MonoBehaviour
         if (currentMode == CameraMode.Exploration)
         {
             // Reset camera position and zoom
-            transform.position = originalCameraPosition;
+            //transform.position = originalCameraPosition;
 
             // Smoothly reset zoom
             StartCoroutine(ResetZoom());
@@ -265,4 +263,3 @@ public class CameraMovement : MonoBehaviour
         virtualCamera.m_Lens.OrthographicSize = targetZoom;
     }
 }
-

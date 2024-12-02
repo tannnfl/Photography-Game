@@ -14,6 +14,8 @@ public class CameraCapture : MonoBehaviour
     [Header("Save Settings")]
     [SerializeField] private string saveFolderName = "CapturedPhotos"; // Folder name inside Assets to save photos
 
+    [SerializeField] private CameraMovement CameraMovement;
+
     private Texture2D screenCapture; // Stores the captured photo
     private bool viewingPhoto; // Tracks whether the player is currently viewing a photo
 
@@ -34,13 +36,20 @@ public class CameraCapture : MonoBehaviour
 
     private void Update()
     {
-        // Left mouse button captures or toggles the photo view
-        if (Input.GetMouseButtonDown(0))
+        if (CameraMovement.currentMode == CameraMovement.CameraMode.Photography)
         {
-            if (!viewingPhoto)
-                StartCoroutine(CapturePhoto());
-            else
-                RemovePhoto();
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (!viewingPhoto)
+                    StartCoroutine(CapturePhoto());
+                else
+                    RemovePhoto();
+            }
+
+        }
+        else if (CameraMovement.currentMode == CameraMovement.CameraMode.Exploration)
+        {
+            RemovePhoto();
         }
     }
 
