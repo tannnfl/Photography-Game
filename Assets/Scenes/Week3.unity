@@ -498,6 +498,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3768225520913604536, guid: e2249b13e680644238ce7afa0e6d1f98, type: 3}
   m_PrefabInstance: {fileID: 498211817011059109}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2101045820 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4181493886997596010, guid: e2249b13e680644238ce7afa0e6d1f98, type: 3}
+  m_PrefabInstance: {fileID: 498211817011059109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a591d623998d64162837b2f6f179ee38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &498211817011059109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -910,6 +921,10 @@ PrefabInstance:
       propertyPath: photoFrame
       value: 
       objectReference: {fileID: 1525059220}
+    - target: {fileID: 1807394823666629843, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
+      propertyPath: CameraMovement
+      value: 
+      objectReference: {fileID: 2101045820}
     - target: {fileID: 1807394823666629843, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
       propertyPath: photoCaptureArea
       value: 
