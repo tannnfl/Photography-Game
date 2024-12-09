@@ -43,7 +43,7 @@ public class DetailObjectBehavior : MonoBehaviour
         {
             SetAlpha(0);
         }
-        print(camSizeRT);
+        //print(camSizeRT);
     }
 
     private void SetAlpha(float alpha)

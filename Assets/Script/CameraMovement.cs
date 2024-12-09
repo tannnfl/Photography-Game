@@ -24,12 +24,15 @@ public class CameraMovement : MonoBehaviour
     public float minZoom = 5f;
     public float maxZoom = 20f;
 
-    private float currentZoom;
+    public float currentZoom;
 
     [Header("UI")]
     public GameObject cameraOverlayUI; // The camera overlay
     public TextMeshProUGUI modeIndicatorText; // Text for mode indication
     public Button switchModeButton; // Optional button for switching modes
+    [SerializeField] private GameObject blogUI;
+    [SerializeField] private BlogManager blogManager;
+    private bool isBlogVisible = false;
 
     [Header("Camera Capture")]
     public GameObject cameraCapture; // The CameraCapture GameObject to disable in Exploration mode
@@ -66,6 +69,7 @@ public class CameraMovement : MonoBehaviour
             CalculateZoomLimits();
             CalculateMovementBounds();
         }
+        blogUI.SetActive(false);
 
         // Set up UI
         UpdateUI();
@@ -88,35 +92,13 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
-        if (currentMode == CameraMode.Photography || currentMode == CameraMode.Exploration)
-        {
-            // Handle movement input
-            movement.x = Input.GetAxisRaw("Horizontal");
-            movement.y = Input.GetAxisRaw("Vertical");
-            movement = movement.normalized;
+        if (!cameraCapture.GetComponent<CameraCapture>().canMove()) return;
 
-            if (currentMode == CameraMode.Photography)
-            {
-                // Handle zoom input in Photography mode only
-                float scrollInput = Input.GetAxis("Mouse ScrollWheel");
-                if (scrollInput != 0)
-                {
-                    currentZoom -= scrollInput * zoomSpeed;
-                    currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
-
-                    // Smooth transition to the target zoom
-                    virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(
-                        virtualCamera.m_Lens.OrthographicSize,
-                        currentZoom,
-                        Time.deltaTime * zoomSpeed
-                    );
-
-                    // Update bounds after zooming
-                    CalculateMovementBounds();
-                }
-            }
-        }
-
+        // ***** When any camera move is enabled *****
+        //move camera
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
+        movement = movement.normalized;
         // Toggle between Photography and Exploration mode
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -127,6 +109,41 @@ public class CameraMovement : MonoBehaviour
             else
             {
                 SwitchMode(CameraMode.Photography);
+            }
+        }
+        // Toggle the Blog UI when "B" is pressed
+        
+        // Hide the Blog UI when "Escape" or mouse button is pressed
+        if (isBlogVisible && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0)))
+        {
+            HideBlogUI();
+        }
+        // ***** When any camera move is enabled *****
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        if (currentMode != CameraMode.Photography)
+        {
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                ToggleBlogUI();
+            }
+        }
+        else
+        {
+            
+            if (scrollInput != 0)
+            {
+                currentZoom -= scrollInput * zoomSpeed;
+                currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+
+                // Smooth transition to the target zoom
+                virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(
+                    virtualCamera.m_Lens.OrthographicSize,
+                    currentZoom,
+                    Time.deltaTime * zoomSpeed
+                );
+
+                // Update bounds after zooming
+                CalculateMovementBounds();
             }
         }
     }
@@ -158,7 +175,7 @@ public class CameraMovement : MonoBehaviour
             float boundsHeight = bounds.size.y / 2f;
             float boundsWidth = bounds.size.x / 2f / screenAspect;
 
-            maxZoom = Mathf.Min(boundsHeight, boundsWidth);
+            //maxZoom = Mathf.Min(boundsHeight, boundsWidth);
         }
     }
 
@@ -199,6 +216,9 @@ public class CameraMovement : MonoBehaviour
 
             if (worldCanvas != null)
                 cameraCapture.SetActive(true);
+
+            speed = 20;
+            HideBlogUI();
         }
         else if (currentMode == CameraMode.Photography)
         {
@@ -214,6 +234,8 @@ public class CameraMovement : MonoBehaviour
                 cameraCapture.SetActive(true);
             if (worldCanvas != null)
                 cameraCapture.SetActive(false);
+            speed = 15;
+            HideBlogUI();
         }
 
         // Update the UI
@@ -250,6 +272,9 @@ public class CameraMovement : MonoBehaviour
 
     private IEnumerator ApplyZoom(float targetZoom)
     {
+        if (targetZoom > maxZoom) targetZoom = maxZoom;
+        if (targetZoom < minZoom) targetZoom = minZoom;
+
         float startZoom = virtualCamera.m_Lens.OrthographicSize;
         float t = 0;
 
@@ -261,5 +286,28 @@ public class CameraMovement : MonoBehaviour
         }
 
         virtualCamera.m_Lens.OrthographicSize = targetZoom;
+    }
+
+    private void ToggleBlogUI()
+    {
+        if (blogUI == null) return;
+
+        isBlogVisible = !isBlogVisible;
+        blogUI.SetActive(isBlogVisible);
+        blogManager.PopulateBlog();
+    }
+    private void HideBlogUI()
+    {
+        if (blogUI == null) return;
+
+        isBlogVisible = false;
+        blogUI.SetActive(false);
+    }
+    public void ShowBlogUI()
+    {
+        if (blogUI == null) return;
+
+        isBlogVisible = true;
+        blogUI.SetActive(true);
     }
 }
