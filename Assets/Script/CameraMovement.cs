@@ -39,6 +39,7 @@ public class CameraMovement : MonoBehaviour
 
     [Header("Dialogue UI")]
     public GameObject worldCanvas;
+    [SerializeField] private GameObject GPP;
 
     private Vector2 minBounds;
     private Vector2 maxBounds;
@@ -51,6 +52,7 @@ public class CameraMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        GPP.SetActive(false);
 
         if (virtualCamera == null)
         {
@@ -219,6 +221,7 @@ public class CameraMovement : MonoBehaviour
 
             speed = 20;
             HideBlogUI();
+            GPP.SetActive(false);
         }
         else if (currentMode == CameraMode.Photography)
         {
@@ -236,6 +239,7 @@ public class CameraMovement : MonoBehaviour
                 cameraCapture.SetActive(false);
             speed = 15;
             HideBlogUI();
+            GPP.SetActive(true);
         }
 
         // Update the UI
