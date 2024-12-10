@@ -85,10 +85,10 @@ public class ObjectRecognition : MonoBehaviour
         print(_array.Length);
         print(_tag);
         _array = GameObject.FindGameObjectsWithTag(_tag);
-
+        print(_array.Length);
         if (_array.Length == 0) return;
-
-        for( int i = 0; i <  _array.Length; i++)
+        _count = new bool[_array.Length];
+        for ( int i = 0; i <  _array.Length; i++)
         {
             _count[i] = false;
             print(i);
