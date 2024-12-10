@@ -13,6 +13,7 @@ public class CameraCapture : MonoBehaviour
     [SerializeField] private Image photoDisplayArea; // The UI Image to display the captured photo
     [SerializeField] private GameObject photoFrame; // The UI Frame for displaying photos
     [SerializeField] private FlashlightEffect flashlightEffect;
+    [SerializeField] private ObjectRecognition objectRecognition;
     public GameObject OnCamera;
 
     [Header("Save Settings")]
@@ -28,7 +29,9 @@ public class CameraCapture : MonoBehaviour
     [SerializeField] private GameObject BloomPostProcessingVolume;
     BlogManager blogManager;
 
-    
+    int countT;
+    int countS;
+    int countO;
 
     
 
@@ -127,7 +130,9 @@ public class CameraCapture : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         OnCamera.SetActive(false);
         yield return new WaitForEndOfFrame();
-
+        countT = objectRecognition.RecognizeObjects("touristObject");
+        countS = objectRecognition.RecognizeObjects("secretObject");
+        countO = objectRecognition.RecognizeObjects("otherObject");
         // Capture the photo
         Vector3[] worldCorners = new Vector3[4];
         photoCaptureArea.GetWorldCorners(worldCorners);
@@ -180,7 +185,7 @@ public class CameraCapture : MonoBehaviour
     
     void SaveDescription(string description)
     {
-        capturedPhotos.Add((screenCapture, description, System.DateTime.Now.ToString("hh:mm:ss tt"),CalculateViews()));
+        capturedPhotos.Add((screenCapture, description, System.DateTime.Now.ToString("hh:mm:ss tt"),CalculateViews(countT,countS,countO)));
         //SavePhoto(screenCapture, description);
 
         descriptionInputField.onSubmit.RemoveListener(SaveDescription);
@@ -238,9 +243,9 @@ public class CameraCapture : MonoBehaviour
         return currentCMode == CMode.TakePhoto;
     }
 
-    private int CalculateViews()
+    private int CalculateViews(int _t, int _s, int _o)
     {
-        return Mathf.FloorToInt(Random.Range(0, 100));
+        return Mathf.FloorToInt(_t * 1.7f + _s * 3.5f + _o * 0.7f + Random.Range(1,10));
     }
 
     private void UpdatePhotocount()

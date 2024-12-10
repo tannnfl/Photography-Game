@@ -7,25 +7,29 @@ public class ObjectRecognition : MonoBehaviour
     [SerializeField] private RectTransform photoCaptureArea; // The UI boundary for photo capture
 
     // Object lists
-    private List<GameObject> tagAObjects = new List<GameObject>();
-    private List<GameObject> tagBObjects = new List<GameObject>();
-    private List<GameObject> tagCObjects = new List<GameObject>();
+    private GameObject[] touristObjects = { };
+    private GameObject[] secretObjects = { };
+    private GameObject[] otherObjects = { };
+    private bool[] touristObjectsCount = { };
+    private bool[] secretObjectsCount = { };
+    private bool[] otherObjectsCount = { };
 
     // Counts
-    public int TagACount { get; private set; }
-    public int TagBCount { get; private set; }
-    public int TagCCount { get; private set; }
+    public int TagCount { get; private set; }
 
-    public void RecognizeObjects()
+    private void Start()
     {
-        // Reset counts and lists
-        TagACount = 0;
-        TagBCount = 0;
-        TagCCount = 0;
+        InitiateObjectList("touristObject", touristObjects, touristObjectsCount);
+        InitiateObjectList("secretObject", secretObjects, secretObjectsCount);
+        InitiateObjectList("otherObject", otherObjects, otherObjectsCount);
+    }
 
-        tagAObjects.Clear();
-        tagBObjects.Clear();
-        tagCObjects.Clear();
+    public int RecognizeObjects(string tag)
+    {
+        GameObject[] tempObjects;
+
+        // Reset counts and lists
+        TagCount = 0;
 
         // Define the world boundaries of the photo capture area
         Vector3[] worldCorners = new Vector3[4];
@@ -41,34 +45,55 @@ public class ObjectRecognition : MonoBehaviour
         // Find all objects in the scene
         GameObject[] allObjects = FindObjectsOfType<GameObject>();
 
+        GameObject[] Objects = { };
+        bool[] ObjectsCount = { };
         // Check each object for its tag and position
         foreach (GameObject obj in allObjects)
         {
-            if (captureBounds.Contains(obj.transform.position))
+            if (!captureBounds.Contains(obj.transform.position)) continue;
+            if (!obj.CompareTag(tag)) continue;
+            
+            switch (tag)
             {
-                if (obj.CompareTag("TagA"))
-                {
-                    tagAObjects.Add(obj);
-                    TagACount++;
-                }
-                else if (obj.CompareTag("TagB"))
-                {
-                    tagBObjects.Add(obj);
-                    TagBCount++;
-                }
-                else if (obj.CompareTag("TagC"))
-                {
-                    tagCObjects.Add(obj);
-                    TagCCount++;
-                }
+                case "touristObject":
+                    Objects = touristObjects;
+                    ObjectsCount = touristObjectsCount;
+                    break;
+                case "secretObject":
+                    Objects = secretObjects;
+                    ObjectsCount = secretObjectsCount;
+                    break;
+                case "otherObject":
+                    Objects = otherObjects;
+                    ObjectsCount = otherObjectsCount;
+                    break;
+            }
+            for (int i = 0; i < Objects.Length; i++)
+            {
+                if (Objects[i] != obj) continue;
+                if (ObjectsCount[i] == true) continue;
+
+                ObjectsCount[i] = true;
+                TagCount++;
             }
         }
-
-        Debug.Log($"TagA Count: {TagACount}, TagB Count: {TagBCount}, TagC Count: {TagCCount}");
+        return TagCount;
     }
 
-    // Example of how to access objects
-    public GameObject[] GetTagAObjects() => tagAObjects.ToArray();
-    public GameObject[] GetTagBObjects() => tagBObjects.ToArray();
-    public GameObject[] GetTagCObjects() => tagCObjects.ToArray();
+    private void InitiateObjectList(string _tag, GameObject[] _array, bool[] _count)
+    {
+        print(_array.Length);
+        print(_tag);
+        _array = GameObject.FindGameObjectsWithTag(_tag);
+
+        if (_array.Length == 0) return;
+
+        for( int i = 0; i <  _array.Length; i++)
+        {
+            _count[i] = false;
+            print(i);
+        }
+            
+
+    }
 }

@@ -205,6 +205,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeMagnitude: 20
+--- !u!114 &223742897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223742891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fb3a2a3e29ca42a6b77e26b80ed226b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  photoCaptureCamera: {fileID: 519420031}
+  photoCaptureArea: {fileID: 1481764711}
 --- !u!1 &239253429
 GameObject:
   m_ObjectHideFlags: 0
@@ -2494,6 +2508,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1481764710}
     - target: {fileID: 1807394823666629843, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
+      propertyPath: objectRecognition
+      value: 
+      objectReference: {fileID: 223742897}
+    - target: {fileID: 1807394823666629843, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
       propertyPath: BloomPostProcessingVolume
       value: 
       objectReference: {fileID: 699947467}
@@ -2540,6 +2558,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3174161922820320664, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
       insertIndex: -1
       addedObject: {fileID: 223742894}
+    - targetCorrespondingSourceObject: {fileID: 3174161922820320664, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 223742897}
   m_SourcePrefab: {fileID: 100100000, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
 --- !u!1001 &3171261210695259922
 PrefabInstance:
