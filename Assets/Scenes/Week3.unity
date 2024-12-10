@@ -403,7 +403,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6245923613890400981, guid: da4d3fc27075145639921a3bd62faf9b, type: 3}
       propertyPath: m_Name
-      value: Env_CultSymbol
+      value: sec_CultSymbol
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
