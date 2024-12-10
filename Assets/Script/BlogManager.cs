@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BlogManager : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class BlogManager : MonoBehaviour
     [SerializeField] private Transform contentArea; // Content area of the scroll view
     [SerializeField] private GameObject postPrefab; // Prefab for a single post
 
-    private List<(Texture2D photo, string description)> capturedPhotos = new List<(Texture2D, string)>(); // Reference to the photo list
+    private List<(Texture2D photo, string description, string time, int views)> capturedPhotos = new List<(Texture2D, string, string, int)>(); // Reference to the photo list
 
     /// <summary>
     /// Populates the blog UI with photos and descriptions.
@@ -26,8 +27,7 @@ public class BlogManager : MonoBehaviour
         int maxPosts = Mathf.Min(12, capturedPhotos.Count);
         for (int i = capturedPhotos.Count - 1; i >= capturedPhotos.Count - maxPosts; i--)
         {
-            print(capturedPhotos[i].photo + capturedPhotos[i].description);
-            AddPost(capturedPhotos[i].photo, capturedPhotos[i].description);
+            AddPost(capturedPhotos[i].photo, capturedPhotos[i].description, capturedPhotos[i].time, capturedPhotos[i].views);
         }
     }
 
@@ -36,7 +36,7 @@ public class BlogManager : MonoBehaviour
     /// </summary>
     /// <param name="photo">The photo for the post</param>
     /// <param name="description">The description for the post</param>
-    private void AddPost(Texture2D photo, string description)
+    private void AddPost(Texture2D photo, string description, string time, int views)
     {
         // Instantiate the post prefab
         GameObject newPost = Instantiate(postPrefab, contentArea);
@@ -47,26 +47,30 @@ public class BlogManager : MonoBehaviour
         {
             photoImage.sprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), new Vector2(0.5f, 0.5f));
         }
-        print(1);
-        // Set the description in the Text component
-        Text descriptionText = newPost.transform.Find("Description").GetComponent<Text>();
-        print(2);
+
+        // Set the description in the TextMeshPro component
+        TextMeshProUGUI descriptionText = newPost.transform.Find("Description").GetComponent<TextMeshProUGUI>();
         if (descriptionText != null)
         {
-            print(3);
             descriptionText.text = description;
-            print(4);
         }
-        print("add post finished, now return");
-    }
 
+        // Set the time
+        newPost.transform.Find("Time").GetComponent<TextMeshProUGUI>().text = time;
+        print(time);
+
+        // Set the Views
+        newPost.transform.Find("Views").GetComponent<TextMeshProUGUI>().text = views.ToString() + " views";
+        print(newPost.transform.Find("Time").GetComponent<TextMeshProUGUI>().text);
+
+    }
     /// <summary>
     /// Updates the captured photos list and refreshes the blog UI.
     /// </summary>
     /// <param name="photos">The list of captured photos and descriptions</param>
-    public void UpdatePhotoList(List<(Texture2D photo, string description)> photos)
+    public void UpdatePhotoList(List<(Texture2D photo, string description, string time, int view)> _photos)
     {
-        capturedPhotos = photos;
+        capturedPhotos = _photos;
         PopulateBlog();
     }
 }

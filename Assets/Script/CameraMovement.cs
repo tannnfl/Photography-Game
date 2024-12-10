@@ -113,8 +113,12 @@ public class CameraMovement : MonoBehaviour
                 SwitchMode(CameraMode.Photography);
             }
         }
+        if (currentMode == CameraMode.Photography && Input.GetKeyDown(KeyCode.Escape))
+        {
+            SwitchMode(CameraMode.Exploration);
+        }
         // Toggle the Blog UI when "B" is pressed
-        
+
         // Hide the Blog UI when "Escape" or mouse button is pressed
         if (isBlogVisible && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0)))
         {

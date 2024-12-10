@@ -13,6 +13,7 @@ public class CameraCapture : MonoBehaviour
     [SerializeField] private Image photoDisplayArea; // The UI Image to display the captured photo
     [SerializeField] private GameObject photoFrame; // The UI Frame for displaying photos
     [SerializeField] private FlashlightEffect flashlightEffect;
+    public GameObject OnCamera;
 
     [Header("Save Settings")]
     [SerializeField] private string saveFolderName = "CapturedPhotos"; // Folder name inside Assets to save photos
@@ -24,13 +25,14 @@ public class CameraCapture : MonoBehaviour
 
     [Header("Tools")]
     [SerializeField] private ScreenShake screenShake;
+    [SerializeField] private GameObject BloomPostProcessingVolume;
     BlogManager blogManager;
 
     
 
     
 
-    private List<(Texture2D photo, string description)> capturedPhotos = new List<(Texture2D, string)>();
+    private List<(Texture2D photo, string description, string time, int views)> capturedPhotos = new List<(Texture2D, string, string, int)>();
 
     private Vector2 originalPosition; // Original position of the photoFrameBG
     private Vector2 centerPosition; // Center position of the screen
@@ -67,12 +69,14 @@ public class CameraCapture : MonoBehaviour
             Directory.CreateDirectory(folderPath);
             Debug.Log($"Created folder at: {folderPath}");
         }
+        UpdatePhotocount();
     }
 
     private void Update()
     {
         //test
         //if (Input.GetKey(KeyCode.P)) ShowPhoto(capturedPhotos[0].photo);
+        
 
         if (isProcessingInput)
         {
@@ -109,31 +113,39 @@ public class CameraCapture : MonoBehaviour
                 break;
         }
         currentCMode = newCMode;
+        UpdatePhotocount();
     }
 
     IEnumerator CapturePhoto()
     {
         isProcessingInput = true; // Prevent further inputs
+        BloomPostProcessingVolume.SetActive(false);
+        
         //viewingPhoto = true;
         flashlightEffect.TriggerFlashlight(4f);
         screenShake.TriggerShake();
         yield return new WaitForSeconds(0.1f);
-
+        OnCamera.SetActive(false);
         yield return new WaitForEndOfFrame();
 
         // Capture the photo
         Vector3[] worldCorners = new Vector3[4];
         photoCaptureArea.GetWorldCorners(worldCorners);
         Rect captureRegion = new Rect(worldCorners[0].x, worldCorners[0].y, worldCorners[2].x - worldCorners[0].x, worldCorners[2].y - worldCorners[0].y);
+        
 
         screenCapture = new Texture2D((int)captureRegion.width, (int)captureRegion.height, TextureFormat.RGB24, false);
         screenCapture.ReadPixels(captureRegion, 0, 0);
         screenCapture.Apply();
 
+        OnCamera.SetActive(true);
+
         yield return new WaitForSeconds(0.5f);
         ShowPhoto();
+        UpdatePhotocount();
         yield return new WaitForSeconds(0.5f);
-        ShowDescriptionInput();
+        ShowDescriptionInput(); 
+        BloomPostProcessingVolume.SetActive(true);
     }
 
     void ShowPhoto()
@@ -168,7 +180,7 @@ public class CameraCapture : MonoBehaviour
     
     void SaveDescription(string description)
     {
-        capturedPhotos.Add((screenCapture, description));
+        capturedPhotos.Add((screenCapture, description, System.DateTime.Now.ToString("hh:mm:ss tt"),CalculateViews()));
         //SavePhoto(screenCapture, description);
 
         descriptionInputField.onSubmit.RemoveListener(SaveDescription);
@@ -226,6 +238,19 @@ public class CameraCapture : MonoBehaviour
         return currentCMode == CMode.TakePhoto;
     }
 
+    private int CalculateViews()
+    {
+        return Mathf.FloorToInt(Random.Range(0, 100));
+    }
 
-    
+    private void UpdatePhotocount()
+    {
+        OnCamera.transform.Find("PhotoCount").GetComponent<TextMeshProUGUI>().text = capturedPhotos.Count.ToString() + " / 12";
+        if (capturedPhotos.Count == 12) TriggerEnding();
+    }
+
+    private void TriggerEnding()
+    {
+
+    }
 }
