@@ -74,7 +74,8 @@ public class CameraCapture : MonoBehaviour
         moveInstance = RuntimeManager.CreateInstance(movePath);//
         musicInstance = RuntimeManager.CreateInstance(musicPath);//
         typingInstance = RuntimeManager.CreateInstance(typingPath);//
-        musicInstance.start();
+        if(SceneManager.GetActiveScene().name == "Week3")
+            musicInstance.start();
 
         blogManager = FindObjectOfType<BlogManager>();
         blogManager.UpdatePhotoList(capturedPhotos);
