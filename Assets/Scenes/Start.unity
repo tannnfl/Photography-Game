@@ -887,6 +887,7 @@ MonoBehaviour:
   fadeDuration: 1
   typingSpeed: 0.01
   cameraCapture: {fileID: 223742898}
+  title: {fileID: 1681117277}
   fadeImage: {fileID: 1042219756}
   fadeImageDuration: 1
 --- !u!4 &852420012

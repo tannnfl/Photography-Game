@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class CameraCapture : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class CameraCapture : MonoBehaviour
     [Header("Tools")]
     [SerializeField] private ScreenShake screenShake;
     [SerializeField] private GameObject BloomPostProcessingVolume;
+    [SerializeField] private Image fadeImage;
+    public float fadeImageDuration = 1.0f;
+
     BlogManager blogManager;
 
     int countT;
@@ -73,6 +77,14 @@ public class CameraCapture : MonoBehaviour
             Debug.Log($"Created folder at: {folderPath}");
         }
         UpdatePhotocount();
+        if (fadeImage != null)
+        {
+            // Ensure the fade image starts as transparent
+            Color fadeColor = fadeImage.color;
+            fadeColor.a = 0f; // Fully transparent
+            fadeImage.color = fadeColor;
+        }
+        fadeImage.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -251,11 +263,33 @@ public class CameraCapture : MonoBehaviour
     private void UpdatePhotocount()
     {
         OnCamera.transform.Find("PhotoCount").GetComponent<TextMeshProUGUI>().text = capturedPhotos.Count.ToString() + " / 12";
-        if (capturedPhotos.Count == 12) TriggerEnding();
+        if (capturedPhotos.Count == 12) StartCoroutine(TriggerEnding());
     }
 
-    private void TriggerEnding()
+    private IEnumerator TriggerEnding()
     {
+        yield return new WaitForSeconds(3f);
+        fadeImage.gameObject.SetActive(true);
+        // Gradually increase the alpha of the image to fade to black
+        float elapsed = 0f;
+        Color fadeColor = fadeImage.color;
 
+        while (elapsed < fadeImageDuration)
+        {
+            print(elapsed);
+            elapsed += Time.deltaTime;
+            fadeColor.a = Mathf.Clamp01(elapsed / fadeImageDuration);
+            fadeImage.color = fadeColor;
+            yield return null;
+        }
+
+        print(1);
+        // Ensure it's completely black
+        fadeColor.a = 1f;
+        fadeImage.color = fadeColor;
+
+        yield return new WaitForSeconds(0.5f);
+        // Optionally fade from black in the new scene
+        CameraMovement.ToggleBlogUI();
     }
 }

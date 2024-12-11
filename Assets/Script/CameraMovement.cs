@@ -296,7 +296,7 @@ public class CameraMovement : MonoBehaviour
         virtualCamera.m_Lens.OrthographicSize = targetZoom;
     }
 
-    private void ToggleBlogUI()
+    public void ToggleBlogUI()
     {
         if (blogUI == null) return;
 
