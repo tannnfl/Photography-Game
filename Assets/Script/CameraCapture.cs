@@ -27,7 +27,10 @@ public class CameraCapture : MonoBehaviour
     [Header("Tools")]
     [SerializeField] private ScreenShake screenShake;
     [SerializeField] private GameObject BloomPostProcessingVolume;
+    [SerializeField] private GameObject noPost;
     BlogManager blogManager;
+
+    static CameraCapture instance;
 
     int countT;
     int countS;
@@ -35,7 +38,7 @@ public class CameraCapture : MonoBehaviour
 
     
 
-    private List<(Texture2D photo, string description, string time, int views)> capturedPhotos = new List<(Texture2D, string, string, int)>();
+    public List<(Texture2D photo, string description, string time, int views)> capturedPhotos = new List<(Texture2D, string, string, int)>();
 
     private Vector2 originalPosition; // Original position of the photoFrameBG
     private Vector2 centerPosition; // Center position of the screen
@@ -50,6 +53,18 @@ public class CameraCapture : MonoBehaviour
         TakePhoto, ViewPhoto
     }
     public CMode currentCMode = CMode.TakePhoto;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        } else if (instance != this)
+        {
+            Destroy(instance);
+        }
+    }
 
     private void Start()
     {
@@ -252,6 +267,7 @@ public class CameraCapture : MonoBehaviour
     {
         OnCamera.transform.Find("PhotoCount").GetComponent<TextMeshProUGUI>().text = capturedPhotos.Count.ToString() + " / 12";
         if (capturedPhotos.Count == 12) TriggerEnding();
+        if (capturedPhotos.Count != 0) noPost.SetActive(false);
     }
 
     private void TriggerEnding()
