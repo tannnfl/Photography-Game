@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1417196538814569383}
   m_Layer: 0
-  m_Name: sec_CultSymbol
+  m_Name: Env_CultSymbol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -98,5 +98,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 0}
-  showDetailCamSize: 8
+  showDetailCamSize: 9
   showDetailDuration: 2
