@@ -10,6 +10,7 @@ public class StartInstruction : MonoBehaviour
     [SerializeField] private float fadeDuration = 1f; // Duration for fade in/out
     [SerializeField] private float typingSpeed = 0.05f;
     [SerializeField] private CameraCapture cameraCapture;
+    [SerializeField] private GameObject title;
 
     private enum State {intro, move, camera, camera0, camera2, openblog, aboard}
     private State currentState = State.intro;
@@ -26,6 +27,15 @@ public class StartInstruction : MonoBehaviour
         SwitchState(State.intro);
         instructionPos = 0;
         UpdateInstruction();
+        if (fadeImage != null)
+        {
+            // Ensure the fade image starts as transparent
+            Color fadeColor = fadeImage.color;
+            fadeColor.a = 0f; // Fully transparent
+            fadeImage.color = fadeColor;
+        }
+        fadeImage.gameObject.SetActive(false);
+        title.SetActive(false);
     }
     private void Update()
     {
@@ -54,7 +64,11 @@ public class StartInstruction : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.B)) SwitchState(State.aboard);
                 break;
             case State.aboard:
-                if (Input.GetKeyDown(KeyCode.Space)) SceneManager.LoadScene("Week3", LoadSceneMode.Single); 
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    StartCoroutine( FadeToBlack("Week3"));
+                    print("fade");
+                }
                 break;
         }
     }
@@ -66,7 +80,7 @@ public class StartInstruction : MonoBehaviour
             case State.intro:
                 instructions = new string[]
                 { 
-                    "\"Finally, a break after 300 days of endless work\"",
+                    "\"Finally, a break after 300 days of endless work for Empire Newspaper\"",
                     "\"I finally got the money to quit, and the one-day trip to...\"",
                     "\"WonderIsland.\"",
                     "\"I'm so excited.\"",
@@ -201,21 +215,33 @@ public class StartInstruction : MonoBehaviour
 
     private IEnumerator FadeToBlack(string sceneName)
     {
+        print(0);
+        fadeImage.gameObject.SetActive(true);
         // Gradually increase the alpha of the image to fade to black
         float elapsed = 0f;
         Color fadeColor = fadeImage.color;
 
         while (elapsed < fadeDuration)
         {
+            print(elapsed);
             elapsed += Time.deltaTime;
             fadeColor.a = Mathf.Clamp01(elapsed / fadeDuration);
             fadeImage.color = fadeColor;
             yield return null;
         }
 
+        print(1);
         // Ensure it's completely black
         fadeColor.a = 1f;
         fadeImage.color = fadeColor;
+
+        yield return new WaitForSeconds(0.5f);
+        title.SetActive(true);
+        TypingEffectCoroutine("Blind Memory");
+
+        yield return new WaitForSeconds(3f);
+
+        TypingEffectCoroutine("");
 
         // Load the new scene
         SceneManager.LoadScene(sceneName);
