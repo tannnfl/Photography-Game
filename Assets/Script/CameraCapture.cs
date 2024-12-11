@@ -35,7 +35,7 @@ public class CameraCapture : MonoBehaviour
 
     
 
-    private List<(Texture2D photo, string description, string time, int views)> capturedPhotos = new List<(Texture2D, string, string, int)>();
+    public List<(Texture2D photo, string description, string time, int views)> capturedPhotos = new List<(Texture2D, string, string, int)>();
 
     private Vector2 originalPosition; // Original position of the photoFrameBG
     private Vector2 centerPosition; // Center position of the screen
