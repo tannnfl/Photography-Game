@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using System.IO;
 using UnityEngine.SceneManagement;
+using FMOD.Studio;
+using FMODUnity;
+
 
 public class CameraCapture : MonoBehaviour
 {
@@ -15,6 +18,9 @@ public class CameraCapture : MonoBehaviour
     [SerializeField] private GameObject photoFrame; // The UI Frame for displaying photos
     [SerializeField] private FlashlightEffect flashlightEffect;
     [SerializeField] private ObjectRecognition objectRecognition;
+    [SerializeField] private string endingPath = "event:/ending";
+    [SerializeField] private string movePath = "event:/Move";
+    private EventInstance moveInstance;
     public GameObject OnCamera;
 
     [Header("Save Settings")]
@@ -32,6 +38,13 @@ public class CameraCapture : MonoBehaviour
     public float fadeImageDuration = 1.0f;
 
     BlogManager blogManager;
+
+    //fmod
+    [SerializeField] private string typingPath = "event:/typing";
+    private EventInstance typingInstance;
+    [SerializeField] private string musicPath = "event:/musicLoop";
+    private EventInstance musicInstance;
+    [SerializeField] private string shootPath = "event:/shoot";
 
     int countT;
     int countS;
@@ -57,6 +70,12 @@ public class CameraCapture : MonoBehaviour
 
     private void Start()
     {
+        //fmod
+        moveInstance = RuntimeManager.CreateInstance(movePath);//
+        musicInstance = RuntimeManager.CreateInstance(musicPath);//
+        typingInstance = RuntimeManager.CreateInstance(typingPath);//
+        musicInstance.start();
+
         blogManager = FindObjectOfType<BlogManager>();
         blogManager.UpdatePhotoList(capturedPhotos);
 
@@ -86,7 +105,7 @@ public class CameraCapture : MonoBehaviour
         }
         fadeImage.gameObject.SetActive(false);
     }
-
+    float t = 0;
     private void Update()
     {
         //test
@@ -111,6 +130,17 @@ public class CameraCapture : MonoBehaviour
 
             switchMode(CMode.ViewPhoto);
         }
+        if(currentCMode == CMode.ViewPhoto)
+        {
+            t -= Time.deltaTime;
+            if(Input.anyKeyDown &&!Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+            {
+                t = 0.5f;
+                typingInstance.start();
+                typingInstance.setPaused(false);
+            }
+            if (t <= 0) typingInstance.setPaused(true);
+        }
     }
 
     private void switchMode(CMode newCMode)
@@ -122,6 +152,8 @@ public class CameraCapture : MonoBehaviour
                 StartCoroutine(CapturePhoto());
                 break;
             case CMode.TakePhoto:
+                typingInstance.setPaused(true);
+                moveInstance.setPaused(true);
                 descriptionInputField.gameObject.SetActive(false);
                 currentTextDisplay.gameObject.SetActive(false);
                 RemovePhoto();
@@ -133,6 +165,7 @@ public class CameraCapture : MonoBehaviour
 
     IEnumerator CapturePhoto()
     {
+        RuntimeManager.PlayOneShot(shootPath);
         isProcessingInput = true; // Prevent further inputs
         BloomPostProcessingVolume.SetActive(false);
         
@@ -268,7 +301,10 @@ public class CameraCapture : MonoBehaviour
 
     private IEnumerator TriggerEnding()
     {
+        musicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        RuntimeManager.PlayOneShot(endingPath);
         yield return new WaitForSeconds(3f);
+
         fadeImage.gameObject.SetActive(true);
         // Gradually increase the alpha of the image to fade to black
         float elapsed = 0f;

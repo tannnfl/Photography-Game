@@ -888,6 +888,8 @@ MonoBehaviour:
   typingSpeed: 0.01
   cameraCapture: {fileID: 223742898}
   title: {fileID: 1681117277}
+  typingPath: event:/typing
+  airplanePath: event:/airplane
   fadeImage: {fileID: 1042219756}
   fadeImageDuration: 1
 --- !u!4 &852420012
@@ -3269,6 +3271,10 @@ PrefabInstance:
       propertyPath: OnCamera
       value: 
       objectReference: {fileID: 576204378}
+    - target: {fileID: 1807394823666629843, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
+      propertyPath: fadeImage
+      value: 
+      objectReference: {fileID: 1042219756}
     - target: {fileID: 1807394823666629843, guid: d9ec891bd54b24757b575033e3cb9512, type: 3}
       propertyPath: photoFrame
       value: 

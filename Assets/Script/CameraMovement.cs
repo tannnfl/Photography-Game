@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using Cinemachine;
 using TMPro;
 using UnityEngine.UI;
+using FMOD.Studio;
+using FMODUnity;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -41,6 +43,24 @@ public class CameraMovement : MonoBehaviour
     public GameObject worldCanvas;
     [SerializeField] private GameObject GPP;
 
+    //fmod
+    [SerializeField] private string movePath = "event:/Move";
+    private EventInstance moveInstance;
+    [SerializeField] private string openCameraPath = "event:/opencam";
+    private EventInstance openCameraInstance;
+    [SerializeField] private string closeCameraPath = "event:/closeCam";
+    private EventInstance closeCameraInstance;
+    [SerializeField] private string openBlogPath = "event:/openblog";
+    private EventInstance openBlogInstance;
+    [SerializeField] private string closeBlogPath = "event:/closeBlog";
+    private EventInstance closeBlogInstance;
+    [SerializeField] private string zoomPath = "event:/zoom";
+    private EventInstance zoomInstance;
+    [SerializeField] private string shootPath = "event:/shoot";
+    private EventInstance shootInstance;
+    [SerializeField] private string endingPath = "event:/ending";
+    private EventInstance endingInstance;
+
     private Vector2 minBounds;
     private Vector2 maxBounds;
     private float cameraWidth;
@@ -51,6 +71,15 @@ public class CameraMovement : MonoBehaviour
 
     private void Start()
     {
+        //fmod
+        moveInstance = RuntimeManager.CreateInstance(movePath);//
+        openCameraInstance = RuntimeManager.CreateInstance(openCameraPath);//
+        closeCameraInstance = RuntimeManager.CreateInstance(closeCameraPath);//
+        openBlogInstance = RuntimeManager.CreateInstance(openBlogPath);//
+        closeBlogInstance = RuntimeManager.CreateInstance(closeBlogPath);//
+        zoomInstance = RuntimeManager.CreateInstance(zoomPath);//
+        endingInstance = RuntimeManager.CreateInstance(endingPath);
+
         rb = GetComponent<Rigidbody2D>();
         GPP.SetActive(false);
 
@@ -91,7 +120,7 @@ public class CameraMovement : MonoBehaviour
             });
         }
     }
-
+    float t = 0;
     private void Update()
     {
         if (!cameraCapture.GetComponent<CameraCapture>().canMove()) return;
@@ -113,7 +142,16 @@ public class CameraMovement : MonoBehaviour
                 SwitchMode(CameraMode.Photography);
             }
         }
-        if (currentMode == CameraMode.Photography && Input.GetKeyDown(KeyCode.Escape))
+        t -= Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            t = 0.5f;
+            moveInstance.start();
+            moveInstance.setPaused(false);
+        }
+        if (t <= 0)
+            moveInstance.setPaused(true);
+            if (currentMode == CameraMode.Photography && Input.GetKeyDown(KeyCode.Escape))
         {
             SwitchMode(CameraMode.Exploration);
         }
@@ -210,6 +248,8 @@ public class CameraMovement : MonoBehaviour
 
         if (currentMode == CameraMode.Exploration)
         {
+            zoomInstance.setPaused(true);
+            RuntimeManager.PlayOneShot(openCameraPath);
             // Reset camera position and zoom
             //transform.position = originalCameraPosition;
 
@@ -229,12 +269,25 @@ public class CameraMovement : MonoBehaviour
         }
         else if (currentMode == CameraMode.Photography)
         {
+
+            RuntimeManager.PlayOneShot(closeCameraPath);
             // Set a fixed zoom-in value for Photography Mode
             float fixedPhotographyZoom = 10f; // Adjust this value as needed
             currentZoom = fixedPhotographyZoom;
 
             // Smoothly apply the fixed zoom
             StartCoroutine(ApplyZoom(fixedPhotographyZoom));
+            if (fixedPhotographyZoom > maxZoom) fixedPhotographyZoom = maxZoom;
+            if (fixedPhotographyZoom < minZoom) fixedPhotographyZoom = minZoom;
+            if (virtualCamera.m_Lens.OrthographicSize != fixedPhotographyZoom)
+            {
+                zoomInstance.start();
+                zoomInstance.setPaused(false);
+            }
+            else
+            {
+                zoomInstance.setPaused(true);
+            }
 
             // Enable CameraCapture functionality in Photography Mode
             if (cameraCapture != null)
@@ -280,8 +333,10 @@ public class CameraMovement : MonoBehaviour
 
     private IEnumerator ApplyZoom(float targetZoom)
     {
-        if (targetZoom > maxZoom) targetZoom = maxZoom;
-        if (targetZoom < minZoom) targetZoom = minZoom;
+        yield return new WaitForEndOfFrame();
+        
+        
+        yield return new WaitForEndOfFrame();
 
         float startZoom = virtualCamera.m_Lens.OrthographicSize;
         float t = 0;
@@ -293,11 +348,15 @@ public class CameraMovement : MonoBehaviour
             yield return null;
         }
 
+        yield return new WaitForEndOfFrame();
+
         virtualCamera.m_Lens.OrthographicSize = targetZoom;
+        
     }
 
     public void ToggleBlogUI()
     {
+        RuntimeManager.PlayOneShot(openBlogPath);
         if (blogUI == null) return;
 
         isBlogVisible = !isBlogVisible;
@@ -306,6 +365,7 @@ public class CameraMovement : MonoBehaviour
     }
     private void HideBlogUI()
     {
+        RuntimeManager.PlayOneShot(closeBlogPath);
         if (blogUI == null) return;
 
         isBlogVisible = false;
@@ -313,6 +373,7 @@ public class CameraMovement : MonoBehaviour
     }
     public void ShowBlogUI()
     {
+        RuntimeManager.PlayOneShot(openBlogPath);
         if (blogUI == null) return;
 
         isBlogVisible = true;

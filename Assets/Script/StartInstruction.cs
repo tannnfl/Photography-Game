@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using FMOD.Studio;
+using FMODUnity;
 
 public class StartInstruction : MonoBehaviour
 {
@@ -10,7 +12,12 @@ public class StartInstruction : MonoBehaviour
     [SerializeField] private float fadeDuration = 1f; // Duration for fade in/out
     [SerializeField] private float typingSpeed = 0.05f;
     [SerializeField] private CameraCapture cameraCapture;
+    //fmod
     [SerializeField] private GameObject title;
+    [SerializeField] private string typingPath = "event:/typing"; 
+    private EventInstance typingInstance;
+    [SerializeField] private string airplanePath = "event:/airplane";
+    private EventInstance airplaneInstance;
 
     private enum State {intro, move, camera, camera0, camera2, openblog, aboard}
     private State currentState = State.intro;
@@ -24,6 +31,12 @@ public class StartInstruction : MonoBehaviour
 
     private void Start()
     {
+        //fmod
+        typingInstance = RuntimeManager.CreateInstance(typingPath);
+        airplaneInstance = RuntimeManager.CreateInstance(airplanePath);
+        airplaneInstance.start();
+
+        //instantiate
         SwitchState(State.intro);
         instructionPos = 0;
         UpdateInstruction();
@@ -186,6 +199,9 @@ public class StartInstruction : MonoBehaviour
 
     private IEnumerator TypingEffectCoroutine(string newInstruction)
     {
+        yield return
+        typingInstance.start();
+        typingInstance.setPaused(false);
         // Clear the current text
         instructionText.text = "";
 
@@ -198,6 +214,7 @@ public class StartInstruction : MonoBehaviour
 
         // Nullify the coroutine reference when finished
         typingCoroutine = null;
+        typingInstance.setPaused(true);
     }
 
     private IEnumerator moveCompleted()
@@ -229,7 +246,7 @@ public class StartInstruction : MonoBehaviour
             fadeImage.color = fadeColor;
             yield return null;
         }
-
+        airplaneInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         print(1);
         // Ensure it's completely black
         fadeColor.a = 1f;
