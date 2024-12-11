@@ -37,7 +37,7 @@ public class CameraCapture : MonoBehaviour
     [SerializeField] private Image fadeImage;
     public float fadeImageDuration = 1.0f;
 
-    BlogManager blogManager;
+    public BlogManager blogManager;
 
     //fmod
     [SerializeField] private string typingPath = "event:/typing";
@@ -77,7 +77,6 @@ public class CameraCapture : MonoBehaviour
         if(SceneManager.GetActiveScene().name == "Week3")
             musicInstance.start();
 
-        blogManager = FindObjectOfType<BlogManager>();
         blogManager.UpdatePhotoList(capturedPhotos);
 
         // Initialize photo frame positions
