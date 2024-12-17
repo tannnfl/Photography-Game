@@ -17,7 +17,7 @@ public class ObjectRecognition : MonoBehaviour
     // Counts
     public int TagCount { get; private set; }
 
-    private void Start()
+    private void Awake()
     {
         InitiateObjectList("touristObject", touristObjects, touristObjectsCount);
         InitiateObjectList("secretObject", secretObjects, secretObjectsCount);

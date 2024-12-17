@@ -68,7 +68,7 @@ public class CameraCapture : MonoBehaviour
     }
     public CMode currentCMode = CMode.TakePhoto;
 
-    private void Start()
+    private void Awake()
     {
         //fmod
         moveInstance = RuntimeManager.CreateInstance(movePath);//

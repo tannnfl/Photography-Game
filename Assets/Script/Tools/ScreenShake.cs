@@ -11,7 +11,7 @@ public class ScreenShake : MonoBehaviour
     private Vector3 originalPosition; // Original position of the camera
     private Coroutine shakeCoroutine; // Reference to the active shake coroutine
 
-    private void Start()
+    private void Awake()
     {
         // Cache the camera transform
         cameraTransform = Camera.main.transform;

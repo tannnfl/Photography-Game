@@ -69,7 +69,7 @@ public class CameraMovement : MonoBehaviour
     private Vector3 originalCameraPosition; // Store the original camera position
     private float originalCameraZoom; // Store the original zoom level
 
-    private void Start()
+    private void Awake()
     {
         //fmod
         moveInstance = RuntimeManager.CreateInstance(movePath);//

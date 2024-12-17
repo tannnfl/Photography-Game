@@ -9,7 +9,7 @@ public class FlashlightEffect : MonoBehaviour
     [SerializeField] private float flashDuration = 1.0f; // Total duration of the flash
     [SerializeField] private AnimationCurve intensityCurve; // Optional curve to control the intensity
 
-    private void Start()
+    private void Awake()
     {
         if (flashlightLight == null)
         {

@@ -14,7 +14,7 @@ public class DetailObjectBehavior : MonoBehaviour
     SpriteRenderer sr;
     float camSizeRT;
 
-    void Start()
+    void Awake()
     {
         sr = GetComponent<SpriteRenderer>(); // Assign SpriteRenderer first
         if (sr == null)
