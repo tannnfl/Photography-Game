@@ -35,6 +35,9 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private GameObject blogUI;
     [SerializeField] private BlogManager blogManager;
     private bool isBlogVisible = false;
+    public GameObject camUI1;
+    public GameObject camUI2;
+    public GameObject camUI3;
 
     [Header("Camera Capture")]
     public GameObject cameraCapture; // The CameraCapture GameObject to disable in Exploration mode
@@ -323,6 +326,9 @@ public class CameraMovement : MonoBehaviour
         if (cameraOverlayUI != null)
         {
             cameraOverlayUI.SetActive(currentMode == CameraMode.Photography);
+            camUI1.SetActive(currentMode == CameraMode.Photography);
+            camUI2.SetActive(currentMode == CameraMode.Photography);
+            camUI3.SetActive(currentMode == CameraMode.Photography);
         }
 
         if (modeIndicatorText != null)

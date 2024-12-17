@@ -21,7 +21,9 @@ public class CameraCapture : MonoBehaviour
     [SerializeField] private string endingPath = "event:/ending";
     [SerializeField] private string movePath = "event:/Move";
     private EventInstance moveInstance;
-    public GameObject OnCamera;
+    public GameObject OnCamera1;
+    public GameObject OnCamera2;
+    public GameObject OnCamera3;
 
     [Header("Save Settings")]
     [SerializeField] private string saveFolderName = "CapturedPhotos"; // Folder name inside Assets to save photos
@@ -173,7 +175,9 @@ public class CameraCapture : MonoBehaviour
         flashlightEffect.TriggerFlashlight(4f);
         screenShake.TriggerShake();
         yield return new WaitForSeconds(0.1f);
-        OnCamera.SetActive(false);
+        OnCamera1.SetActive(false);
+        OnCamera2.SetActive(false);
+        OnCamera3.SetActive(false);
         yield return new WaitForEndOfFrame();
         countT = objectRecognition.RecognizeObjects("touristObject");
         countS = objectRecognition.RecognizeObjects("secretObject");
@@ -188,7 +192,9 @@ public class CameraCapture : MonoBehaviour
         screenCapture.ReadPixels(captureRegion, 0, 0);
         screenCapture.Apply();
 
-        OnCamera.SetActive(true);
+        OnCamera1.SetActive(true);
+        OnCamera2.SetActive(true);
+        OnCamera3.SetActive(true);
 
         yield return new WaitForSeconds(0.5f);
         ShowPhoto();
@@ -295,7 +301,7 @@ public class CameraCapture : MonoBehaviour
 
     private void UpdatePhotocount()
     {
-        OnCamera.transform.Find("PhotoCount").GetComponent<TextMeshProUGUI>().text = capturedPhotos.Count.ToString() + " / 12";
+        OnCamera3.GetComponent<TextMeshProUGUI>().text = capturedPhotos.Count.ToString() + " / 12";
         if (capturedPhotos.Count == 12) StartCoroutine(TriggerEnding());
     }
 

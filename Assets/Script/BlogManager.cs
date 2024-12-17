@@ -9,6 +9,7 @@ public class BlogManager : MonoBehaviour
     [SerializeField] private GameObject blogUI; // Reference to the Blog UI
     [SerializeField] private Transform contentArea; // Content area of the scroll view
     [SerializeField] private GameObject postPrefab; // Prefab for a single post
+    public GameObject noPost;
 
     private List<(Texture2D photo, string description, string time, int views)> capturedPhotos = new List<(Texture2D, string, string, int)>(); // Reference to the photo list
 
@@ -17,6 +18,14 @@ public class BlogManager : MonoBehaviour
     /// </summary>
     public void PopulateBlog()
     {
+        if(capturedPhotos.Count != 0)
+        {
+            noPost.SetActive(false);
+        }
+        else
+        {
+            noPost.SetActive(true);
+        }
         // Clear existing posts
         foreach (Transform child in contentArea)
         {
