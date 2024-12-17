@@ -7,6 +7,7 @@ using System.IO;
 using UnityEngine.SceneManagement;
 using FMOD.Studio;
 using FMODUnity;
+using UnityEngine.Rendering;
 
 
 public class CameraCapture : MonoBehaviour
@@ -86,9 +87,9 @@ public class CameraCapture : MonoBehaviour
         centerPosition = new Vector2(0f, 30f);
 
         // Hide UI initially
-        if (photoFrame != null) photoFrame.SetActive(false);
+        if (photoFrame != null) photoFrame.GetComponent<Image>().enabled = false;
         descriptionInputField.gameObject.SetActive(false);
-        currentTextDisplay.gameObject.SetActive(false);
+        currentTextDisplay.GetComponent<TextMeshProUGUI>().enabled = false;
 
         // Create folder for captured photos
         string folderPath = Path.Combine(Application.dataPath, saveFolderName);
@@ -157,7 +158,7 @@ public class CameraCapture : MonoBehaviour
                 typingInstance.setPaused(true);
                 moveInstance.setPaused(true);
                 descriptionInputField.gameObject.SetActive(false);
-                currentTextDisplay.gameObject.SetActive(false);
+                currentTextDisplay.GetComponent<TextMeshProUGUI>().enabled = false;
                 RemovePhoto();
                 break;
         }
@@ -169,15 +170,15 @@ public class CameraCapture : MonoBehaviour
     {
         RuntimeManager.PlayOneShot(shootPath);
         isProcessingInput = true; // Prevent further inputs
-        BloomPostProcessingVolume.SetActive(false);
+        BloomPostProcessingVolume.GetComponent<Volume>().enabled = false;
         
         //viewingPhoto = true;
         flashlightEffect.TriggerFlashlight(4f);
         screenShake.TriggerShake();
         yield return new WaitForSeconds(0.1f);
-        OnCamera1.SetActive(false);
-        OnCamera2.SetActive(false);
-        OnCamera3.SetActive(false);
+        OnCamera1.GetComponent<Image>().enabled = false;
+        OnCamera2.GetComponent<TextMeshProUGUI>().enabled = false;
+        OnCamera3.GetComponent<TextMeshProUGUI>().enabled = false;
         yield return new WaitForEndOfFrame();
         countT = objectRecognition.RecognizeObjects("touristObject");
         countS = objectRecognition.RecognizeObjects("secretObject");
@@ -192,16 +193,16 @@ public class CameraCapture : MonoBehaviour
         screenCapture.ReadPixels(captureRegion, 0, 0);
         screenCapture.Apply();
 
-        OnCamera1.SetActive(true);
-        OnCamera2.SetActive(true);
-        OnCamera3.SetActive(true);
+        OnCamera1.GetComponent<Image>().enabled = true;
+        OnCamera2.GetComponent<TextMeshProUGUI>().enabled = true;
+        OnCamera3.GetComponent<TextMeshProUGUI>().enabled = true;
 
         yield return new WaitForSeconds(0.5f);
         ShowPhoto();
         UpdatePhotocount();
         yield return new WaitForSeconds(0.5f);
-        ShowDescriptionInput(); 
-        BloomPostProcessingVolume.SetActive(true);
+        ShowDescriptionInput();
+        BloomPostProcessingVolume.GetComponent<Volume>().enabled = true;
     }
 
     void ShowPhoto()
@@ -224,7 +225,7 @@ public class CameraCapture : MonoBehaviour
     {
         // Enable description input
         descriptionInputField.gameObject.SetActive(true);
-        currentTextDisplay.gameObject.SetActive(true);
+        currentTextDisplay.enabled =(true);
         descriptionInputField.text = string.Empty;
         currentTextDisplay.text = string.Empty;
 

@@ -20,11 +20,11 @@ public class BlogManager : MonoBehaviour
     {
         if(capturedPhotos.Count != 0)
         {
-            noPost.SetActive(false);
+            noPost.GetComponent<TextMeshProUGUI>().enabled = false;
         }
         else
         {
-            noPost.SetActive(true);
+            noPost.GetComponent<TextMeshProUGUI>().enabled = true;
         }
         // Clear existing posts
         foreach (Transform child in contentArea)

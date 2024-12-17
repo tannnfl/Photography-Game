@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 using FMOD.Studio;
 using FMODUnity;
+using UnityEngine.Rendering;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -84,7 +85,7 @@ public class CameraMovement : MonoBehaviour
         endingInstance = RuntimeManager.CreateInstance(endingPath);
 
         rb = GetComponent<Rigidbody2D>();
-        GPP.SetActive(false);
+        GPP.GetComponent<Volume>().enabled = (false);
 
         if (virtualCamera == null)
         {
@@ -268,7 +269,7 @@ public class CameraMovement : MonoBehaviour
 
             speed = 20;
             HideBlogUI();
-            GPP.SetActive(false);
+            GPP.GetComponent<Volume>().enabled = (false);
         }
         else if (currentMode == CameraMode.Photography)
         {
@@ -299,7 +300,7 @@ public class CameraMovement : MonoBehaviour
                 cameraCapture.SetActive(false);
             speed = 15;
             HideBlogUI();
-            GPP.SetActive(true);
+            GPP.GetComponent<Volume>().enabled = (true);
         }
 
         // Update the UI
@@ -325,10 +326,10 @@ public class CameraMovement : MonoBehaviour
     {
         if (cameraOverlayUI != null)
         {
-            cameraOverlayUI.SetActive(currentMode == CameraMode.Photography);
-            camUI1.SetActive(currentMode == CameraMode.Photography);
-            camUI2.SetActive(currentMode == CameraMode.Photography);
-            camUI3.SetActive(currentMode == CameraMode.Photography);
+            cameraOverlayUI.GetComponent<Image>().enabled = (currentMode == CameraMode.Photography);
+            camUI1.GetComponent<Image>().enabled = (currentMode == CameraMode.Photography);
+            camUI2.GetComponent<TextMeshProUGUI>().enabled = (currentMode == CameraMode.Photography);
+            camUI3.GetComponent<TextMeshProUGUI>().enabled = (currentMode == CameraMode.Photography);
         }
 
         if (modeIndicatorText != null)
